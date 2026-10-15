@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - Triple H Technology</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        skyTheme: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableReceipt, #printableReceipt * {
+                visibility: visible;
+            }
+            #printableReceipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-skyTheme-50 text-gray-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- نافذة التأكيد المخصصة (Popup Confirm) -->
+    <div id="customConfirmModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <div id="confirmIcon" class="w-14 h-14 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="confirmTitle" class="text-lg font-bold text-gray-800 mb-2">تأكيد الإجراء</h3>
+            <p id="confirmMessage" class="text-sm text-gray-500 mb-6">هل أنت متأكد من رغبتك في تنفيذ هذا الإجراء؟</p>
+            <div class="flex gap-2">
+                <button id="confirmCancelBtn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2.5 rounded-xl font-bold transition text-sm">إلغاء</button>
+                <button id="confirmOkBtn" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2.5 rounded-xl font-bold transition text-sm">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <div class="w-16 h-16 bg-skyTheme-500 text-white rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                <i class="fa-solid fa-cash-register"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Triple H Technology</h2>
+            <p class="text-sm text-gray-500 mb-6">الرجاء إدخال كلمة المرور للمتابعة</p>
+            <input type="password" id="loginPassword" placeholder="كلمة المرور" class="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none mb-4 text-center text-lg tracking-widest" onkeydown="if(event.key === 'Enter') checkLogin()">
+            <button onclick="checkLogin()" class="w-full bg-skyTheme-600 hover:bg-skyTheme-700 text-white py-3 rounded-xl font-bold transition shadow-lg">دخول</button>
+            <p id="loginError" class="text-red-500 text-sm mt-3 hidden">كلمة المرور غير صحيحة!</p>
+        </div>
+    </div>
+
+    <!-- النافذة الرئيسية للنظام -->
+    <div id="appContainer" class="flex-1 flex flex-col h-full hidden overflow-hidden">
+        
+        <!-- الشريط العلوي -->
+        <header class="bg-white border-b px-4 lg:px-6 py-3 flex justify-between items-center shadow-sm shrink-0">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileMenu()" class="lg:hidden text-gray-600 hover:text-skyTheme-600 text-xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="bg-skyTheme-500 text-white p-2 rounded-lg text-lg lg:text-xl">
+                    <i class="fa-solid fa-store"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-sm lg:text-lg text-gray-800">Triple H Technology</h1>
+                    <p class="text-[10px] lg:text-xs text-gray-500">نظام المبيعات والمخزون - </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 lg:gap-4">
+                <div class="bg-skyTheme-50 px-2 lg:px-4 py-1.5 lg:py-2 rounded-xl border border-skyTheme-100 flex items-center gap-1 lg:gap-2">
+                    <span class="text-[10px] lg:text-xs text-gray-500 hidden sm:inline">سعر الصرف:</span>
+                    <input type="number" id="exchangeRate" value="89000" class="w-20 lg:w-24 bg-transparent font-bold text-skyTheme-700 focus:outline-none text-right text-xs lg:text-sm" onchange="updateCalculations()">
+                    <span class="text-[10px] lg:text-xs text-gray-500">ل.ل</span>
+                </div>
+
+                <div class="hidden lg:flex items-center gap-2">
+                    <button onclick="switchTab('pos')" id="tabPosBtn" class="px-4 py-2 rounded-xl font-bold bg-skyTheme-600 text-white transition shadow text-sm">الكاشير (POS)</button>
+                    <button onclick="switchTab('inventory')" id="tabInvBtn" class="px-4 py-2 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition text-sm">إدارة المنتجات</button>
+                    <button onclick="switchTab('categories')" id="tabCatBtn" class="px-4 py-2 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition text-sm">التصنيفات</button>
+                    <button onclick="switchTab('reports')" id="tabRepBtn" class="px-4 py-2 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition text-sm">التقارير</button>
+                </div>
+
+                <!-- أزرار التحكم الإضافية (إعادة تشغيل وتسجيل خروج) -->
+                <div class="flex items-center gap-1.5 border-r pr-2 lg:pr-4">
+                    <button onclick="restartSystem()" title="إعادة تشغيل النظام" class="bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded-xl text-sm transition"><i class="fa-solid fa-rotate"></i></button>
+                    <button onclick="logout()" title="تسجيل الخروج" class="bg-red-50 hover:bg-red-100 text-red-600 p-2 rounded-xl text-sm transition"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- القائمة الجانبية للموبايل -->
+        <div id="mobileMenu" class="fixed inset-0 bg-black/50 z-50 hidden lg:hidden flex">
+            <div class="bg-white w-72 h-full shadow-2xl p-5 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-center mb-6 border-b pb-4">
+                        <h3 class="font-bold text-lg text-skyTheme-700"><i class="fa-solid fa-bars ml-2"></i>القائمة الرئيسية</h3>
+                        <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-red-500 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <div class="space-y-2">
+                        <button onclick="switchTab('pos'); toggleMobileMenu();" id="mTabPosBtn" class="w-full text-right px-4 py-3 rounded-xl font-bold bg-skyTheme-600 text-white transition flex items-center gap-3"><i class="fa-solid fa-cash-register w-6"></i> الكاشير (POS)</button>
+                        <button onclick="switchTab('inventory'); toggleMobileMenu();" id="mTabInvBtn" class="w-full text-right px-4 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition flex items-center gap-3"><i class="fa-solid fa-boxes-stacked w-6"></i> إدارة المنتجات</button>
+                        <button onclick="switchTab('categories'); toggleMobileMenu();" id="mTabCatBtn" class="w-full text-right px-4 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition flex items-center gap-3"><i class="fa-solid fa-tags w-6"></i> التصنيفات</button>
+                        <button onclick="switchTab('reports'); toggleMobileMenu();" id="mTabRepBtn" class="w-full text-right px-4 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition flex items-center gap-3"><i class="fa-solid fa-chart-line w-6"></i> التقارير</button>
+                    </div>
+                </div>
+                <div class="text-center text-xs text-gray-400 pt-4 border-t">
+                    Triple H Technology &copy; 2026
+                </div>
+            </div>
+            <div class="flex-1" onclick="toggleMobileMenu()"></div>
+        </div>
+
+        <!-- المحتوى -->
+        <div class="flex-1 flex overflow-hidden relative">
+
+            <!-- صفحة الكاشير (POS) -->
+            <div id="posView" class="flex-1 flex flex-col lg:flex-row h-full overflow-hidden w-full">
+                <div class="flex-1 p-3 lg:p-6 flex flex-col h-full overflow-hidden">
+                    <div class="flex gap-2 mb-3 shrink-0">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-barcode absolute right-4 top-3.5 text-gray-400 text-base"></i>
+                            <input type="text" id="barcodeScanInput" placeholder="امسح الباركود أو ابحث..." class="w-full pr-11 pl-3 py-2.5 bg-white border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none shadow-sm text-sm" onkeyup="handleBarcode(event)">
+                        </div>
+                        <button onclick="openExtraModal()" class="bg-amber-500 hover:bg-amber-600 text-white px-3 lg:px-5 rounded-xl font-bold shadow transition flex items-center gap-1.5 text-xs lg:text-sm shrink-0">
+                            <i class="fa-solid fa-plus-circle"></i> <span class="hidden sm:inline">منتج</span> إكسترا
+                        </button>
+                    </div>
+
+                    <div id="categoriesFilterBar" class="flex gap-2 overflow-x-auto pb-2 mb-3 no-scrollbar shrink-0"></div>
+
+                    <!-- شبكة المنتجات -->
+                    <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 overflow-y-auto flex-1 p-1"></div>
+                </div>
+
+                <div class="lg:hidden fixed bottom-4 left-4 z-40">
+                    <button onclick="toggleMobileCart()" class="bg-skyTheme-600 text-white p-4 rounded-full shadow-2xl flex items-center justify-center text-xl relative">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="mobileCartBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold hidden">0</span>
+                    </button>
+                </div>
+
+                <div id="cartContainer" class="fixed inset-y-0 left-0 w-full sm:w-[420px] bg-white border-r flex flex-col h-full shadow-2xl z-50 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300">
+                    <div class="p-4 border-b bg-skyTheme-50 flex justify-between items-center shrink-0">
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleMobileCart()" class="lg:hidden text-gray-500 hover:text-gray-700 text-lg"><i class="fa-solid fa-arrow-right"></i></button>
+                            <h2 class="font-bold text-gray-800 text-base lg:text-lg"><i class="fa-solid fa-cart-shopping ml-2 text-skyTheme-600"></i>سلة المشتريات</h2>
+                        </div>
+                        <button onclick="confirmClearCart()" class="text-red-500 text-xs lg:text-sm hover:underline"><i class="fa-solid fa-trash-can"></i> إفراغ</button>
+                    </div>
+
+                    <div id="cartItemsList" class="flex-1 overflow-y-auto p-3 space-y-2"></div>
+
+                    <div class="p-4 border-t bg-gray-50 space-y-2 lg:space-y-3 shrink-0">
+                        <div class="flex justify-between text-xs lg:text-sm">
+                            <span class="text-gray-500">المجموع ($):</span>
+                            <span id="cartTotalUSD" class="font-bold text-gray-800">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-xs lg:text-sm">
+                            <span class="text-gray-500">المجموع بالليرة (ل.ل):</span>
+                            <span id="cartTotalLBP" class="font-bold text-skyTheme-700">0 ل.ل</span>
+                        </div>
+                        <div class="flex justify-between text-xs lg:text-sm text-emerald-600 font-semibold">
+                            <span>الربح المتوقع ($):</span>
+                            <span id="cartTotalProfit">$0.00</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button onclick="checkout('USD')" class="bg-skyTheme-600 hover:bg-skyTheme-700 text-white py-2.5 lg:py-3 rounded-xl font-bold transition shadow text-xs lg:text-sm">إتمام الدفع ($)</button>
+                            <button onclick="checkout('LBP')" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 lg:py-3 rounded-xl font-bold transition shadow text-xs lg:text-sm">إتمام الدفع (ل.ل)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- صفحة إدارة المنتجات -->
+            <div id="inventoryView" class="flex-1 p-4 lg:p-6 flex flex-col h-full hidden overflow-y-auto">
+                <div class="flex justify-between items-center mb-4 lg:mb-6">
+                    <h2 class="text-lg lg:text-xl font-bold text-gray-800"><i class="fa-solid fa-boxes-stacked ml-2 text-skyTheme-600"></i>إدارة المخزون</h2>
+                    <button onclick="openProductModal()" class="bg-skyTheme-600 hover:bg-skyTheme-700 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl font-bold shadow transition text-xs lg:text-sm"><i class="fa-solid fa-plus ml-1"></i> إضافة منتج</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow border overflow-x-auto flex-1">
+                    <table class="w-full text-right border-collapse min-w-[700px]">
+                        <thead class="bg-gray-50 border-b text-gray-600 text-xs lg:text-sm">
+                            <tr>
+                                <th class="p-3 lg:p-4">الباركود</th>
+                                <th class="p-3 lg:p-4">اسم المنتج</th>
+                                <th class="p-3 lg:p-4">التصنيف</th>
+                                <th class="p-3 lg:p-4">التكلفة</th>
+                                <th class="p-3 lg:p-4">سعر المبيع</th>
+                                <th class="p-3 lg:p-4">الربح ($)</th>
+                                <th class="p-3 lg:p-4">الكمية</th>
+                                <th class="p-3 lg:p-4 text-center">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody" class="divide-y text-xs lg:text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- صفحة إدارة التصنيفات -->
+            <div id="categoriesView" class="flex-1 p-4 lg:p-6 flex flex-col h-full hidden overflow-y-auto">
+                <div class="flex justify-between items-center mb-4 lg:mb-6">
+                    <h2 class="text-lg lg:text-xl font-bold text-gray-800"><i class="fa-solid fa-tags ml-2 text-skyTheme-600"></i>إدارة التصنيفات</h2>
+                    <button onclick="openCategoryModal()" class="bg-skyTheme-600 hover:bg-skyTheme-700 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl font-bold shadow transition text-xs lg:text-sm"><i class="fa-solid fa-plus ml-1"></i> إضافة تصنيف</button>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow border overflow-x-auto flex-1">
+                    <table class="w-full text-right border-collapse min-w-[500px]">
+                        <thead class="bg-gray-50 border-b text-gray-600 text-xs lg:text-sm">
+                            <tr>
+                                <th class="p-3 lg:p-4">اسم التصنيف</th>
+                                <th class="p-3 lg:p-4">الوصف</th>
+                                <th class="p-3 lg:p-4 text-center">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTableBody" class="divide-y text-xs lg:text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- صفحة التقارير والأرباح اليومية -->
+            <div id="reportsView" class="flex-1 p-4 lg:p-6 flex flex-col h-full hidden overflow-y-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 lg:mb-6 gap-4">
+                    <h2 class="text-lg lg:text-xl font-bold text-gray-800"><i class="fa-solid fa-chart-line ml-2 text-skyTheme-600"></i>سجلات المبيعات والأرباح</h2>
+                    
+                    <div class="flex items-center gap-3">
+                        <!-- إجمالي الربح اليومي -->
+                        <div class="bg-emerald-50 border border-emerald-200 px-4 py-2 rounded-2xl flex items-center gap-4 shadow-sm">
+                            <div>
+                                <span class="text-xs text-emerald-600 font-semibold block">إجمالي أرباح اليوم ($):</span>
+                                <span id="dailyProfitUSD" class="text-lg font-bold text-emerald-700">$0.00</span>
+                            </div>
+                            <div class="border-r border-emerald-200 pr-4">
+                                <span class="text-xs text-emerald-600 font-semibold block">بالليرة (ل.ل):</span>
+                                <span id="dailyProfitLBP" class="text-sm font-bold text-emerald-700">0 ل.ل</span>
+                            </div>
+                        </div>
+                        <!-- زر إنهاء اليوم -->
+                        <button onclick="endTheDay()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-2xl font-bold shadow-md transition flex items-center gap-2 text-sm shrink-0">
+                            <i class="fa-solid fa-power-off"></i> إنهاء اليوم (End Day)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow border overflow-x-auto flex-1">
+                    <table class="w-full text-right border-collapse min-w-[700px]">
+                        <thead class="bg-gray-50 border-b text-gray-600 text-xs lg:text-sm">
+                            <tr>
+                                <th class="p-3 lg:p-4">رقم الفاتورة / التاريخ</th>
+                                <th class="p-3 lg:p-4">المنتجات</th>
+                                <th class="p-3 lg:p-4">المجموع ($)</th>
+                                <th class="p-3 lg:p-4">المجموع (ل.ل)</th>
+                                <th class="p-3 lg:p-4">الربح ($)</th>
+                                <th class="p-3 lg:p-4 text-center">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody" class="divide-y text-xs lg:text-sm"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- قالب الفاتورة الحرارية للطباعة (End of Day) -->
+    <div id="printableReceipt" class="hidden p-6 bg-white text-black font-mono text-xs w-[300px] mx-auto">
+        <div class="text-center pb-3 border-b border-dashed border-gray-400">
+            <h2 class="text-base font-bold">Triple H Technology</h2>
+            <p>تقرير إغلاق الصندوق اليومي (End of Day)</p>
+            <p id="printDate" class="text-[10px] text-gray-600 mt-1"></p>
+        </div>
+        <div class="py-3 border-b border-dashed border-gray-400 space-y-1">
+            <div class="flex justify-between font-bold">
+                <span>إجمالي المبيعات ($):</span>
+                <span id="printTotalUSD">$0.00</span>
+            </div>
+            <div class="flex justify-between font-bold">
+                <span>إجمالي المبيعات (ل.ل):</span>
+                <span id="printTotalLBP">0 ل.ل</span>
+            </div>
+            <div class="flex justify-between font-bold text-emerald-700">
+                <span>إجمالي الأرباح ($):</span>
+                <span id="printTotalProfit">$0.00</span>
+            </div>
+            <div class="flex justify-between">
+                <span>عدد الفواتير:</span>
+                <span id="printOrdersCount">0</span>
+            </div>
+        </div>
+        <div class="text-center pt-3 text-[10px] text-gray-600">
+            شكراً لتعاملكم معنا <br> Triple H Technology &copy; 2026
+        </div>
+    </div>
+
+    <!-- نافذة إضافة/تعديل منتج -->
+    <div id="productModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4 overflow-y-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md my-auto">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-gray-800">إضافة منتج جديد</h3>
+            <input type="hidden" id="editProductId">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">الباركود</label>
+                    <input type="text" id="pBarcode" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المنتج</label>
+                    <input type="text" id="pName" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">التصنيف</label>
+                    <select id="pCategory" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none bg-white text-sm"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">عملة الإدخال</label>
+                        <select id="pCurrency" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none bg-white text-sm">
+                            <option value="USD">دولار ($)</option>
+                            <option value="LBP">ليرة (ل.ل)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">الكمية المتوفرة</label>
+                        <input type="number" id="pStock" value="1" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">سعر التكلفة</label>
+                        <input type="number" step="any" id="pCost" value="0" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">سعر المبيع</label>
+                        <input type="number" step="any" id="pPrice" value="0" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeProductModal()" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">إلغاء</button>
+                <button onclick="saveProduct()" class="px-5 py-2 bg-skyTheme-600 text-white rounded-xl font-bold shadow text-sm">حفظ المنتج</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة/تعديل تصنيف -->
+    <div id="categoryModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm">
+            <h3 id="categoryModalTitle" class="text-lg font-bold mb-4 text-gray-800">إضافة تصنيف جديد</h3>
+            <input type="hidden" id="editCategoryId">
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">اسم التصنيف</label>
+                    <input type="text" id="catName" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">الوصف</label>
+                    <input type="text" id="catDesc" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeCategoryModal()" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">إلغاء</button>
+                <button onclick="saveCategory()" class="px-5 py-2 bg-skyTheme-600 text-white rounded-xl font-bold shadow text-sm">حفظ التصنيف</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة منتج إكسترا -->
+    <div id="extraModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm">
+            <h3 class="text-lg font-bold mb-4 text-gray-800"><i class="fa-solid fa-plus-circle text-amber-500 ml-1"></i> إضافة منتج إكسترا</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">اسم المنتج</label>
+                    <input type="text" id="extraName" placeholder="مثال: خدمة صيانة" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">عملة الإدخال</label>
+                    <select id="extraCurrency" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none bg-white text-sm">
+                        <option value="USD">دولار ($)</option>
+                        <option value="LBP">ليرة (ل.ل)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">التكلفة</label>
+                        <input type="number" step="any" id="extraCost" value="0" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">سعر المبيع</label>
+                        <input type="number" step="any" id="extraPrice" value="0" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-skyTheme-500 focus:outline-none text-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 mt-5">
+                <button onclick="closeExtraModal()" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm">إلغاء</button>
+                <button onclick="addExtraToCart()" class="px-5 py-2 bg-amber-500 text-white rounded-xl font-bold shadow text-sm">إضافة للسلة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs منطق التطبيق -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, push, remove, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyABfBoajVCS8E6u8o1fJrQUuqvS9LPBM9g",
+            authDomain: "beweblestore.firebaseapp.com",
+            databaseURL: "https://beweblestore-default-rtdb.firebaseio.com",
+            projectId: "beweblestore",
+            storageBucket: "beweblestore.firebasestorage.app",
+            messagingSenderId: "392640420443",
+            appId: "1:392640420443:web:6065fbc4a00e52977d3d7e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let products = [];
+        let categories = [];
+        let cart = [];
+        let orders = [];
+        let selectedCategoryFilter = 'all';
+        const ADMIN_PASS = "1234";
+
+        // التحقق من حالة تسجيل الدخول المحفوظة عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+            }
+        });
+
+        window.showConfirm = function(title, message, onConfirmCallback) {
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmMessage').innerText = message;
+            const modal = document.getElementById('customConfirmModal');
+            modal.classList.remove('hidden');
+
+            const okBtn = document.getElementById('confirmOkBtn');
+            const cancelBtn = document.getElementById('confirmCancelBtn');
+
+            const newOkBtn = okBtn.cloneNode(true);
+            okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+
+            const newCancelBtn = cancelBtn.cloneNode(true);
+            cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+            document.getElementById('confirmOkBtn').onclick = function() {
+                modal.classList.add('hidden');
+                onConfirmCallback();
+            };
+            document.getElementById('confirmCancelBtn').onclick = function() {
+                modal.classList.add('hidden');
+            };
+        };
+
+        window.checkLogin = function() {
+            const pass = document.getElementById('loginPassword').value;
+            if(pass === ADMIN_PASS) {
+                localStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('loginModal').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').classList.add('hidden');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        };
+
+        window.logout = function() {
+            showConfirm('تسجيل الخروج', 'هل أنت متأكد من رغبتك في تسجيل الخروج من النظام؟', () => {
+                localStorage.removeItem('isLoggedIn');
+                document.getElementById('loginModal').classList.remove('hidden');
+                document.getElementById('appContainer').classList.add('hidden');
+            });
+        };
+
+        window.restartSystem = function() {
+            showConfirm('إعادة تشغيل النظام', 'هل تريد إعادة تشغيل وتحديث النظام الآن؟', () => {
+                location.reload();
+            });
+        };
+
+        window.toggleMobileMenu = function() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        };
+
+        window.toggleMobileCart = function() {
+            document.getElementById('cartContainer').classList.toggle('-translate-x-full');
+        };
+
+        window.switchTab = function(tab) {
+            document.getElementById('posView').classList.add('hidden');
+            document.getElementById('inventoryView').classList.add('hidden');
+            document.getElementById('categoriesView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            
+            ['tabPosBtn', 'tabInvBtn', 'tabCatBtn', 'tabRepBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "px-4 py-2 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition text-sm";
+            });
+
+            ['mTabPosBtn', 'mTabInvBtn', 'mTabCatBtn', 'mTabRepBtn'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.className = "w-full text-right px-4 py-3 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition flex items-center gap-3";
+            });
+
+            if(tab === 'pos') {
+                document.getElementById('posView').classList.remove('hidden');
+                document.getElementById('tabPosBtn').className = "px-4 py-2 rounded-xl font-bold bg-skyTheme-600 text-white transition shadow text-sm";
+                document.getElementById('mTabPosBtn').className = "w-full text-right px-4 py-3 rounded-xl font-bold bg-skyTheme-600 text-white transition flex items-center gap-3 shadow";
+            } else if(tab === 'inventory') {
+                document.getElementById('inventoryView').classList.remove('hidden');
+                document.getElementById('tabInvBtn').className = "px-4 py-2 rounded-xl font-bold bg-skyTheme-600 text-white transition shadow text-sm";
+                document.getElementById('mTabInvBtn').className = "w-full text-right px-4 py-3 rounded-xl font-bold bg-skyTheme-600 text-white transition flex items-center gap-3 shadow";
+            } else if(tab === 'categories') {
+                document.getElementById('categoriesView').classList.remove('hidden');
+                document.getElementById('tabCatBtn').className = "px-4 py-2 rounded-xl font-bold bg-skyTheme-600 text-white transition shadow text-sm";
+                document.getElementById('mTabCatBtn').className = "w-full text-right px-4 py-3 rounded-xl font-bold bg-skyTheme-600 text-white transition flex items-center gap-3 shadow";
+            } else if(tab === 'reports') {
+                document.getElementById('reportsView').classList.remove('hidden');
+                document.getElementById('tabRepBtn').className = "px-4 py-2 rounded-xl font-bold bg-skyTheme-600 text-white transition shadow text-sm";
+                document.getElementById('mTabRepBtn').className = "w-full text-right px-4 py-3 rounded-xl font-bold bg-skyTheme-600 text-white transition flex items-center gap-3 shadow";
+            }
+        };
+
+        function loadDataFromFirebase() {
+            onValue(ref(db, 'categories'), (snapshot) => {
+                categories = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    Object.keys(data).forEach(key => {
+                        categories.push({ id: key, ...data[key] });
+                    });
+                }
+                renderCategoriesDropdown();
+                renderCategoriesTable();
+                renderCategoriesFilter();
+            });
+
+            onValue(ref(db, 'products'), (snapshot) => {
+                products = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    Object.keys(data).forEach(key => {
+                        products.push({ id: key, ...data[key] });
+                    });
+                }
+                renderProductsGrid();
+                renderInventoryTable();
+            });
+
+            onValue(ref(db, 'orders'), (snapshot) => {
+                orders = [];
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    Object.keys(data).forEach(key => {
+                        orders.push({ id: key, ...data[key] });
+                    });
+                }
+                renderOrdersTable();
+                calculateDailyProfit();
+            });
+        }
+
+        window.filterByCategory = function(catId) {
+            selectedCategoryFilter = catId;
+            renderCategoriesFilter();
+            renderProductsGrid();
+        };
+
+        function renderCategoriesFilter() {
+            const bar = document.getElementById('categoriesFilterBar');
+            if(!bar) return;
+            bar.innerHTML = `<button onclick="filterByCategory('all')" class="px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 transition ${selectedCategoryFilter === 'all' ? 'bg-skyTheme-600 text-white shadow' : 'bg-white text-gray-600 border'}">الكل</button>`;
+            
+            categories.forEach(cat => {
+                const isActive = selectedCategoryFilter === cat.id;
+                bar.innerHTML += `<button onclick="filterByCategory('${cat.id}')" class="px-3 py-1.5 rounded-xl font-bold text-xs shrink-0 transition ${isActive ? 'bg-skyTheme-600 text-white shadow' : 'bg-white text-gray-600 border'}">${cat.name}</button>`;
+            });
+        }
+
+        function renderProductsGrid() {
+            const grid = document.getElementById('productsGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            const filtered = selectedCategoryFilter === 'all' 
+                ? products 
+                : products.filter(p => p.categoryId === selectedCategoryFilter);
+
+            filtered.forEach(p => {
+                const rateInput = document.getElementById('exchangeRate');
+                const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+                const priceUSD = parseFloat(p.price) || 0;
+                const priceLBP = priceUSD * rate;
+
+                grid.innerHTML += `
+                    <div onclick="addToCart('${p.id}')" class="bg-white p-3 rounded-2xl shadow-sm border hover:border-skyTheme-500 cursor-pointer transition flex flex-col justify-between aspect-square select-none">
+                        <div>
+                            <h3 class="font-bold text-gray-800 text-xs sm:text-sm line-clamp-2 mb-1">${p.name}</h3>
+                            <span class="text-[10px] text-gray-400 block">المخزون: ${p.stock}</span>
+                        </div>
+                        <div class="pt-2 border-t flex justify-between items-end">
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-skyTheme-700 block">$${priceUSD.toFixed(2)}</span>
+                                <span class="text-[9px] text-gray-400">${priceLBP.toLocaleString()} ل.ل</span>
+                            </div>
+                            <span class="w-7 h-7 rounded-xl bg-skyTheme-50 text-skyTheme-600 flex items-center justify-center font-bold text-sm shadow-sm">+</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.addToCart = function(productId) {
+            const product = products.find(p => p.id === productId);
+            if(!product) return;
+            if(product.stock <= 0) {
+                alert('نفدت الكمية من المخزون!');
+                return;
+            }
+
+            const existing = cart.find(item => item.id === productId);
+            if(existing) {
+                if(existing.qty + 1 > product.stock) {
+                    alert('الكمية المطلوبة تتجاوز المخزون المتوفر!');
+                    return;
+                }
+                existing.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            renderCart();
+        };
+
+        window.changeCartItemQty = function(index, delta) {
+            const item = cart[index];
+            if(!item) return;
+
+            if(!item.id.toString().startsWith('extra')) {
+                const product = products.find(p => p.id === item.id);
+                if(product && (item.qty + delta > product.stock)) {
+                    alert('لا توجد كمية كافية بالمخزون!');
+                    return;
+                }
+            }
+
+            item.qty += delta;
+            if(item.qty <= 0) {
+                cart.splice(index, 1);
+            }
+            renderCart();
+        };
+
+        window.handleBarcode = function(e) {
+            if(e.key === 'Enter') {
+                const code = document.getElementById('barcodeScanInput').value.trim();
+                const product = products.find(p => p.barcode === code);
+                if(product) {
+                    addToCart(product.id);
+                    document.getElementById('barcodeScanInput').value = '';
+                } else {
+                    alert('لم يتم العثور على منتج بهذا الباركود!');
+                }
+            }
+        };
+
+        function renderCart() {
+            const list = document.getElementById('cartItemsList');
+            if(!list) return;
+            list.innerHTML = '';
+            let totalUSD = 0;
+            let totalProfit = 0;
+            let totalItemsCount = 0;
+
+            cart.forEach((item, index) => {
+                const itemPrice = parseFloat(item.price) || 0;
+                const itemCost = parseFloat(item.cost) || 0;
+                const itemQty = parseInt(item.qty) || 1;
+
+                totalUSD += itemPrice * itemQty;
+                totalProfit += (itemPrice - itemCost) * itemQty;
+                totalItemsCount += itemQty;
+
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-50 p-2.5 rounded-xl border">
+                        <div class="flex-1 pr-1">
+                            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${item.name}</h4>
+                            <span class="text-[10px] text-skyTheme-700 font-bold">$${itemPrice.toFixed(2)}</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="changeCartItemQty(${index}, -1)" class="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-xs font-bold">-</button>
+                            <span class="w-6 text-center text-xs font-bold">${itemQty}</span>
+                            <button onclick="changeCartItemQty(${index}, 1)" class="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-xs font-bold">+</button>
+                            <button onclick="removeFromCart(${index})" class="text-red-400 hover:text-red-600 text-xs ml-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const badge = document.getElementById('mobileCartBadge');
+            if(badge) {
+                if(totalItemsCount > 0) {
+                    badge.innerText = totalItemsCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            const rateInput = document.getElementById('exchangeRate');
+            const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+            const totalLBP = totalUSD * rate;
+
+            document.getElementById('cartTotalUSD').innerText = `$${totalUSD.toFixed(2)}`;
+            document.getElementById('cartTotalLBP').innerText = `${totalLBP.toLocaleString()} ل.ل`;
+            document.getElementById('cartTotalProfit').innerText = `$${totalProfit.toFixed(2)}`;
+        }
+
+        window.removeFromCart = function(index) {
+            cart.splice(index, 1);
+            renderCart();
+        };
+
+        window.confirmClearCart = function() {
+            if(cart.length === 0) return;
+            showConfirm('إفراغ السلة', 'هل أنت متأكد من إفراغ سلة المشتريات بالكامل؟', () => {
+                cart = [];
+                renderCart();
+            });
+        };
+
+        window.checkout = async function(currency) {
+            if(cart.length === 0) {
+                alert('السلة فارغة!');
+                return;
+            }
+
+            const rateInput = document.getElementById('exchangeRate');
+            const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+            let totalUSD = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * item.qty), 0);
+            let totalProfit = cart.reduce((sum, item) => sum + (((parseFloat(item.price) || 0) - (parseFloat(item.cost) || 0)) * item.qty), 0);
+
+            const order = {
+                date: new Date().toLocaleString(),
+                timestamp: Date.now(),
+                items: cart,
+                totalUSD: totalUSD,
+                totalLBP: totalUSD * rate,
+                totalProfit: totalProfit,
+                currency: currency
+            };
+
+            try {
+                await set(push(ref(db, 'orders')), order);
+
+                for(let item of cart) {
+                    if(item.id && !item.id.toString().startsWith('extra')) {
+                        const prod = products.find(p => p.id === item.id);
+                        if(prod) {
+                            const newStock = Math.max(0, prod.stock - item.qty);
+                            await update(ref(db, `products/${item.id}`), { stock: newStock });
+                        }
+                    }
+                }
+
+                alert('تم إتمام الطلب بنجاح!');
+                cart = [];
+                renderCart();
+                if(window.innerWidth < 1024) toggleMobileCart();
+            } catch(error) {
+                alert('حدث خطأ أثناء حفظ الطلب: ' + error.message);
+            }
+        };
+
+        function calculateDailyProfit() {
+            const todayStr = new Date().toLocaleDateString();
+            let dailyProfitUSD = 0;
+
+            orders.forEach(order => {
+                if(order.date && order.date.includes(todayStr.split(',')[0])) {
+                    dailyProfitUSD += parseFloat(order.totalProfit) || 0;
+                }
+            });
+
+            const rateInput = document.getElementById('exchangeRate');
+            const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+            const dailyProfitLBP = dailyProfitUSD * rate;
+
+            const profitUSDEl = document.getElementById('dailyProfitUSD');
+            const profitLBPEl = document.getElementById('dailyProfitLBP');
+            if(profitUSDEl) profitUSDEl.innerText = `$${dailyProfitUSD.toFixed(2)}`;
+            if(profitLBPEl) profitLBPEl.innerText = `${dailyProfitLBP.toLocaleString()} ل.ل`;
+        }
+
+        window.endTheDay = function() {
+            const todayStr = new Date().toLocaleDateString();
+            const todayOrders = orders.filter(order => order.date && order.date.includes(todayStr.split(',')[0]));
+
+            if(todayOrders.length === 0) {
+                alert('لا توجد مبيعات مسجلة لهذا اليوم ليتم إغلاقها!');
+                return;
+            }
+
+            showConfirm('إنهاء اليوم (End Day)', 'هل أنت متأكد من رغبتك في إغلاق الصندوق، طباعة تقرير اليوم، وتصفير السجلات؟', async () => {
+                let sumUSD = 0;
+                let sumLBP = 0;
+                let sumProfit = 0;
+
+                todayOrders.forEach(o => {
+                    sumUSD += parseFloat(o.totalUSD) || 0;
+                    sumLBP += parseFloat(o.totalLBP) || 0;
+                    sumProfit += parseFloat(o.totalProfit) || 0;
+                });
+
+                document.getElementById('printDate').innerText = 'التاريخ: ' + new Date().toLocaleString();
+                document.getElementById('printTotalUSD').innerText = '$' + sumUSD.toFixed(2);
+                document.getElementById('printTotalLBP').innerText = sumLBP.toLocaleString() + ' ل.ل';
+                document.getElementById('printTotalProfit').innerText = '$' + sumProfit.toFixed(2);
+                document.getElementById('printOrdersCount').innerText = todayOrders.length;
+
+                window.print();
+
+                try {
+                    for(let o of todayOrders) {
+                        await remove(ref(db, `orders/${o.id}`));
+                    }
+                    alert('تم إغلاق وتصفير يوم العمل بنجاح!');
+                } catch(e) {
+                    alert('حدث خطأ أثناء تصفير السجلات: ' + e.message);
+                }
+            });
+        };
+
+        window.openExtraModal = function() {
+            document.getElementById('extraName').value = '';
+            document.getElementById('extraCurrency').value = 'USD';
+            document.getElementById('extraCost').value = '0';
+            document.getElementById('extraPrice').value = '0';
+            document.getElementById('extraModal').classList.remove('hidden');
+        };
+
+        window.closeExtraModal = function() {
+            document.getElementById('extraModal').classList.add('hidden');
+        };
+
+        window.addExtraToCart = function() {
+            const name = document.getElementById('extraName').value.trim();
+            const currency = document.getElementById('extraCurrency').value;
+            let cost = parseFloat(document.getElementById('extraCost').value) || 0;
+            let price = parseFloat(document.getElementById('extraPrice').value) || 0;
+
+            if(!name || price <= 0) {
+                alert('الرجاء إدخال اسم المنتج وسعر المبيع الصحيح');
+                return;
+            }
+
+            if(currency === 'LBP') {
+                const rateInput = document.getElementById('exchangeRate');
+                const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+                cost = cost / rate;
+                price = price / rate;
+            }
+
+            cart.push({
+                id: 'extra_' + Date.now(),
+                name: name,
+                cost: cost,
+                price: price,
+                qty: 1
+            });
+            renderCart();
+            closeExtraModal();
+        };
+
+        function renderInventoryTable() {
+            const tbody = document.getElementById('inventoryTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            products.forEach(p => {
+                const cost = parseFloat(p.cost) || 0;
+                const price = parseFloat(p.price) || 0;
+                const profit = price - cost;
+                const cat = categories.find(c => c.id === p.categoryId);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="p-3 lg:p-4 font-mono text-gray-500">${p.barcode || '-'}</td>
+                        <td class="p-3 lg:p-4 font-bold text-gray-800">${p.name}</td>
+                        <td class="p-3 lg:p-4">${cat ? cat.name : '-'}</td>
+                        <td class="p-3 lg:p-4">$${cost.toFixed(2)}</td>
+                        <td class="p-3 lg:p-4 font-bold text-skyTheme-700">$${price.toFixed(2)}</td>
+                        <td class="p-3 lg:p-4 text-emerald-600 font-semibold">$${profit.toFixed(2)}</td>
+                        <td class="p-3 lg:p-4"><span class="px-2 py-1 bg-skyTheme-50 text-skyTheme-700 rounded-lg font-bold">${p.stock || 0}</span></td>
+                        <td class="p-3 lg:p-4 text-center space-x-2 space-x-reverse">
+                            <button onclick="editProduct('${p.id}')" class="text-skyTheme-600 hover:text-skyTheme-800 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderCategoriesDropdown() {
+            const select = document.getElementById('pCategory');
+            if(!select) return;
+            select.innerHTML = '<option value="">بدون تصنيف</option>';
+            categories.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            });
+        }
+
+        window.openProductModal = function(productId = null) {
+            document.getElementById('editProductId').value = '';
+            document.getElementById('pBarcode').value = '';
+            document.getElementById('pName').value = '';
+            document.getElementById('pCategory').value = '';
+            document.getElementById('pCurrency').value = 'USD';
+            document.getElementById('pCost').value = '0';
+            document.getElementById('pPrice').value = '0';
+            document.getElementById('pStock').value = '1';
+            document.getElementById('modalTitle').innerText = "إضافة منتج جديد";
+
+            if(productId) {
+                const p = products.find(prod => prod.id === productId);
+                if(p) {
+                    document.getElementById('editProductId').value = p.id;
+                    document.getElementById('pBarcode').value = p.barcode || '';
+                    document.getElementById('pName').value = p.name || '';
+                    document.getElementById('pCategory').value = p.categoryId || '';
+                    document.getElementById('pCost').value = p.cost !== undefined ? p.cost : 0;
+                    document.getElementById('pPrice').value = p.price !== undefined ? p.price : 0;
+                    document.getElementById('pStock').value = p.stock !== undefined ? p.stock : 1;
+                    document.getElementById('modalTitle').innerText = "تعديل المنتج";
+                }
+            }
+            document.getElementById('productModal').classList.remove('hidden');
+        };
+
+        window.closeProductModal = function() {
+            document.getElementById('productModal').classList.add('hidden');
+        };
+
+        window.saveProduct = async function() {
+            const id = document.getElementById('editProductId').value;
+            const barcode = document.getElementById('pBarcode').value.trim();
+            const name = document.getElementById('pName').value.trim();
+            const categoryId = document.getElementById('pCategory').value;
+            const currency = document.getElementById('pCurrency').value;
+            let cost = parseFloat(document.getElementById('pCost').value);
+            let price = parseFloat(document.getElementById('pPrice').value);
+            let stock = parseInt(document.getElementById('pStock').value);
+
+            if(isNaN(cost)) cost = 0;
+            if(isNaN(price)) price = 0;
+            if(isNaN(stock)) stock = 0;
+
+            if(!name) {
+                alert('الرجاء إدخال اسم المنتج');
+                return;
+            }
+
+            if(currency === 'LBP') {
+                const rateInput = document.getElementById('exchangeRate');
+                const rate = rateInput ? (parseFloat(rateInput.value) || 89000) : 89000;
+                cost = cost / rate;
+                price = price / rate;
+            }
+
+            const productData = { 
+                barcode: barcode || "", 
+                name: name, 
+                categoryId: categoryId || "", 
+                cost: cost, 
+                price: price, 
+                stock: stock 
+            };
+
+            try {
+                if(id) {
+                    await update(ref(db, `products/${id}`), productData);
+                } else {
+                    await set(push(ref(db, 'products')), productData);
+                }
+                closeProductModal();
+                alert('تم حفظ المنتج بنجاح!');
+            } catch(e) {
+                alert('خطأ أثناء حفظ المنتج: ' + e.message);
+            }
+        };
+
+        window.editProduct = function(id) {
+            openProductModal(id);
+        };
+
+        window.deleteProduct = function(productId) {
+            if(!productId) return;
+            showConfirm('حذف المنتج', 'هل أنت متأكد من حذف هذا المنتج نهائياً من النظام؟', async () => {
+                try {
+                    await remove(ref(db, `products/${productId}`));
+                } catch(e) {
+                    alert('حدث خطأ أثناء الحذف: ' + e.message);
+                }
+            });
+        };
+
+        function renderCategoriesTable() {
+            const tbody = document.getElementById('categoriesTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            categories.forEach(c => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="p-3 lg:p-4 font-bold text-gray-800">${c.name}</td>
+                        <td class="p-3 lg:p-4 text-gray-500">${c.description || '-'}</td>
+                        <td class="p-3 lg:p-4 text-center space-x-2 space-x-reverse">
+                            <button onclick="editCategory('${c.id}')" class="text-skyTheme-600 hover:text-skyTheme-800 p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteCategory('${c.id}')" class="text-red-500 hover:text-red-700 p-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.openCategoryModal = function(catId = null) {
+            document.getElementById('editCategoryId').value = '';
+            document.getElementById('catName').value = '';
+            document.getElementById('catDesc').value = '';
+            document.getElementById('categoryModalTitle').innerText = "إضافة تصنيف جديد";
+
+            if(catId) {
+                const cat = categories.find(c => c.id === catId);
+                if(cat) {
+                    document.getElementById('editCategoryId').value = cat.id;
+                    document.getElementById('catName').value = cat.name;
+                    document.getElementById('catDesc').value = cat.description || '';
+                    document.getElementById('categoryModalTitle').innerText = "تعديل التصنيف";
+                }
+            }
+            document.getElementById('categoryModal').classList.remove('hidden');
+        };
+
+        window.closeCategoryModal = function() {
+            document.getElementById('categoryModal').classList.add('hidden');
+        };
+
+        window.saveCategory = async function() {
+            const id = document.getElementById('editCategoryId').value;
+            const name = document.getElementById('catName').value.trim();
+            const description = document.getElementById('catDesc').value.trim();
+
+            if(!name) {
+                alert('الرجاء إدخال اسم التصنيف');
+                return;
+            }
+
+            const catData = { name: name, description: description || "" };
+
+            try {
+                if(id) {
+                    await update(ref(db, `categories/${id}`), catData);
+                } else {
+                    await set(push(ref(db, 'categories')), catData);
+                }
+                closeCategoryModal();
+                alert('تم حفظ التصنيف بنجاح!');
+            } catch(e) {
+                alert('خطأ أثناء حفظ التصنيف: ' + e.message);
+            }
+        };
+
+        window.editCategory = function(id) {
+            openCategoryModal(id);
+        };
+
+        window.deleteCategory = function(catId) {
+            if(!catId) return;
+            showConfirm('حذف التصنيف', 'هل أنت متأكد من حذف هذا التصنيف؟', async () => {
+                try {
+                    await remove(ref(db, `categories/${catId}`));
+                } catch(e) {
+                    alert('حدث خطأ أثناء الحذف: ' + e.message);
+                }
+            });
+        };
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            orders.slice().reverse().forEach(order => {
+                const itemsSummary = (order.items || []).map(i => `${i.name} (${i.qty})`).join(', ');
+                const totalUSD = parseFloat(order.totalUSD) || 0;
+                const totalLBP = parseFloat(order.totalLBP) || 0;
+                const totalProfit = parseFloat(order.totalProfit) || 0;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 border-b">
+                        <td class="p-3 lg:p-4 text-xs text-gray-500">${order.date || '-'}</td>
+                        <td class="p-3 lg:p-4 text-gray-800">${itemsSummary}</td>
+                        <td class="p-3 lg:p-4 font-bold">$${totalUSD.toFixed(2)}</td>
+                        <td class="p-3 lg:p-4 text-skyTheme-700 font-bold">${totalLBP.toLocaleString()} ل.ل</td>
+                        <td class="p-3 lg:p-4 text-emerald-600 font-semibold">$${totalProfit.toFixed(2)}</td>
+                        <td class="p-3 lg:p-4 text-center">
+                            <button onclick="deleteOrder('${order.id}')" class="text-red-500 hover:text-red-700 p-1" title="حذف الطلب"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.deleteOrder = function(orderId) {
+            if(!orderId) return;
+            showConfirm('حذف سجل المبيعات', 'هل أنت متأكد من حذف هذا السجل نهائياً؟', async () => {
+                try {
+                    await remove(ref(db, `orders/${orderId}`));
+                } catch(e) {
+                    alert('حدث خطأ أثناء الحذف: ' + e.message);
+                }
+            });
+        };
+
+        window.updateCalculations = function() {
+            renderCart();
+            renderProductsGrid();
+            calculateDailyProfit();
+        };
+
+        loadDataFromFirebase();
+    </script>
+</body>
+</html>
