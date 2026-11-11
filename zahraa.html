@@ -1,0 +1,1625 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#100b10">
+
+<title>JUST A GIRL | ZAHRAA'S EDITION</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+ --bg:#100b10;
+ --card:#1a111a;
+ --pink:#e8a6bd;
+ --pink2:#bc718f;
+ --gold:#d7bb91;
+ --white:#fff5f8;
+ --muted:#a895a0;
+ --green:#9ad7b0;
+ --red:#df8798;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+ background:
+ radial-gradient(ellipse at 50% 0%,#48243b 0%,transparent 48%),
+ radial-gradient(ellipse at 0% 70%,#291626 0%,transparent 40%),
+ var(--bg);
+ color:var(--white);
+ font-family:Outfit,sans-serif;
+ min-height:100vh;
+ overflow-x:hidden;
+}
+
+body:before{
+ content:"";
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ opacity:.13;
+ background-image:radial-gradient(#fff .5px,transparent .5px);
+ background-size:27px 27px;
+}
+
+.container{
+ width:min(100% - 34px,660px);
+ margin:auto;
+ padding:27px 0 55px;
+ position:relative;
+}
+
+header{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ padding-bottom:18px;
+ border-bottom:1px solid #ffffff18;
+}
+
+.brand{
+ font-size:11px;
+ letter-spacing:3px;
+ font-weight:700;
+ color:var(--pink);
+}
+
+.classified{
+ color:var(--pink);
+ border:1px solid #e8a6bd55;
+ padding:7px 11px;
+ border-radius:30px;
+ font-size:9px;
+ letter-spacing:2px;
+}
+
+.hero{
+ text-align:center;
+ padding:55px 10px 35px;
+}
+
+.flower{
+ width:75px;
+ height:75px;
+ border:1px solid #e8a6bd66;
+ border-radius:50%;
+ margin:0 auto 24px;
+ display:grid;
+ place-items:center;
+ color:var(--pink);
+ font-size:31px;
+ box-shadow:0 0 35px #e8a6bd20;
+ animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+ 50%{transform:translateY(-7px)}
+}
+
+.small-title{
+ font-size:10px;
+ color:var(--gold);
+ letter-spacing:4px;
+ margin-bottom:13px;
+}
+
+.hero h1{
+ font-family:"Playfair Display",serif;
+ font-size:clamp(43px,11vw,72px);
+ font-weight:400;
+}
+
+.hero h1 span{
+ color:var(--pink);
+ font-style:italic;
+}
+
+.subtitle{
+ color:var(--muted);
+ font-size:13px;
+ line-height:1.9;
+ margin-top:14px;
+}
+
+.card{
+ background:linear-gradient(145deg,#211622,#171019);
+ border:1px solid #e8a6bd22;
+ border-radius:18px;
+ padding:23px;
+ margin-bottom:17px;
+ box-shadow:0 20px 60px #0005;
+}
+
+.card-header{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ margin-bottom:20px;
+}
+
+.label{
+ color:var(--pink);
+ font-size:10px;
+ letter-spacing:2.5px;
+ font-weight:600;
+}
+
+.date{
+ color:var(--muted);
+ font-size:11px;
+}
+
+/* CLOCK */
+
+.clock-card{
+ text-align:center;
+ padding:23px 15px;
+ background:linear-gradient(145deg,#281726,#171019);
+ border:1px solid #e8a6bd35;
+ border-radius:15px;
+ margin-bottom:17px;
+}
+
+.clock-time{
+ font-size:clamp(35px,10vw,48px);
+ font-weight:500;
+ letter-spacing:3px;
+ color:var(--white);
+ font-variant-numeric:tabular-nums;
+}
+
+.clock-seconds{color:var(--pink)}
+
+.clock-date{
+ margin-top:9px;
+ font-size:12px;
+ color:var(--gold);
+ letter-spacing:1px;
+}
+
+.clock-zone{
+ margin-top:7px;
+ color:var(--muted);
+ font-size:9px;
+ letter-spacing:2px;
+}
+
+/* COUNTDOWN */
+
+.countdown{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:8px;
+}
+
+.time{
+ background:#ffffff06;
+ border:1px solid #ffffff12;
+ border-radius:11px;
+ padding:15px 3px;
+ text-align:center;
+}
+
+.time strong{
+ display:block;
+ font-size:clamp(21px,6vw,30px);
+ font-weight:500;
+ color:var(--white);
+ font-variant-numeric:tabular-nums;
+}
+
+.time span{
+ color:var(--muted);
+ font-size:8px;
+ letter-spacing:1.5px;
+}
+
+.countdown-label{
+ text-align:center;
+ color:var(--gold);
+ font-size:10px;
+ letter-spacing:2px;
+ margin-bottom:17px;
+}
+
+/* STATISTICS */
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap:11px;
+}
+
+.stat{
+ padding:18px 10px;
+ text-align:center;
+ background:#ffffff06;
+ border:1px solid #ffffff13;
+ border-radius:12px;
+}
+
+.stat-number{
+ font-size:30px;
+ font-weight:600;
+ color:var(--pink);
+ font-variant-numeric:tabular-nums;
+}
+
+.stat-name{
+ font-size:9px;
+ color:var(--muted);
+ letter-spacing:1.5px;
+ margin-top:6px;
+}
+
+.stat:nth-child(2) .stat-number{color:var(--gold)}
+.stat:nth-child(3) .stat-number{color:var(--green)}
+.stat:nth-child(4) .stat-number{color:#bba5db}
+
+.progress-info{
+ display:flex;
+ justify-content:space-between;
+ color:var(--muted);
+ font-size:11px;
+ margin:21px 0 10px;
+}
+
+.track{
+ height:6px;
+ border-radius:10px;
+ background:#ffffff15;
+ overflow:hidden;
+}
+
+.bar{
+ height:100%;
+ width:0;
+ background:linear-gradient(90deg,var(--pink2),var(--gold));
+ transition:width .6s;
+ border-radius:10px;
+}
+
+.progress-caption{
+ font-size:10px;
+ color:var(--muted);
+ text-align:center;
+ margin-top:12px;
+}
+
+/* DAILY MISSION */
+
+.mission{text-align:center}
+
+.mission-icon{
+ font-size:25px;
+ color:var(--pink);
+ margin-bottom:15px;
+}
+
+.mission h2{
+ font-family:"Playfair Display",serif;
+ font-weight:400;
+ font-size:26px;
+ margin:10px 0;
+}
+
+.description{
+ font-size:12px;
+ color:var(--muted);
+ line-height:1.9;
+}
+
+.challenge{
+ margin-top:25px;
+ padding:23px 17px;
+ background:#e8a6bd08;
+ border:1px solid #e8a6bd35;
+ border-radius:13px;
+}
+
+.challenge-number{
+ font-size:10px;
+ color:var(--gold);
+ letter-spacing:3px;
+ margin-bottom:20px;
+}
+
+.question{
+ font-family:"Playfair Display",serif;
+ font-size:21px;
+ line-height:1.65;
+ margin-bottom:22px;
+}
+
+input{
+ width:100%;
+ padding:16px;
+ border:1px solid #ffffff25;
+ border-radius:9px;
+ outline:none;
+ background:#100b10;
+ color:white;
+ font-family:Outfit,sans-serif;
+ font-size:14px;
+ text-align:center;
+}
+
+input:focus{border-color:var(--pink)}
+
+button{
+ border:0;
+ cursor:pointer;
+ font-family:Outfit,sans-serif;
+ transition:.25s;
+}
+
+.main-btn{
+ width:100%;
+ padding:16px;
+ margin-top:12px;
+ border-radius:9px;
+ color:#24131c;
+ font-weight:700;
+ letter-spacing:2px;
+ font-size:11px;
+ background:linear-gradient(110deg,#d88fae,#f0c5d4,#d7bb91);
+}
+
+.main-btn:hover{
+ transform:translateY(-2px);
+ box-shadow:0 7px 25px #e8a6bd35;
+}
+
+.main-btn:disabled{
+ opacity:.5;
+ cursor:not-allowed;
+}
+
+.message{
+ font-size:12px;
+ min-height:20px;
+ margin-top:15px;
+ color:var(--pink);
+}
+
+.waiting{
+ text-align:center;
+ padding:35px 10px;
+}
+
+.waiting .lock{
+ font-size:32px;
+ color:var(--pink);
+ margin-bottom:17px;
+}
+
+.waiting h3{
+ font-family:"Playfair Display",serif;
+ font-size:24px;
+ font-weight:400;
+ margin-bottom:10px;
+}
+
+.waiting p{
+ color:var(--muted);
+ font-size:12px;
+ line-height:1.9;
+}
+
+.schedule-countdown{
+ color:var(--gold);
+ margin-top:17px;
+ font-size:22px;
+ letter-spacing:3px;
+ font-weight:600;
+ font-variant-numeric:tabular-nums;
+}
+
+/* FINAL */
+
+.final{
+ display:none;
+ text-align:center;
+ padding:30px 15px;
+}
+
+.final h2{
+ font-family:"Playfair Display",serif;
+ font-size:clamp(35px,9vw,54px);
+ font-weight:400;
+ color:var(--pink);
+ margin:14px 0;
+}
+
+.final .final-sub{
+ font-family:"Playfair Display",serif;
+ font-size:19px;
+ font-style:italic;
+ color:var(--gold);
+ margin-bottom:18px;
+}
+
+.final p{
+ color:#d5c4ce;
+ font-size:13px;
+ line-height:2;
+}
+
+.secret{
+ margin-top:14px;
+ text-align:left;
+ border:1px solid #e8a6bd28;
+ border-radius:11px;
+ padding:17px;
+ background:#ffffff05;
+}
+
+.secret span{
+ display:block;
+ color:var(--gold);
+ font-size:9px;
+ letter-spacing:2px;
+ margin-bottom:8px;
+}
+
+.secret strong{
+ font-family:"Playfair Display",serif;
+ font-size:18px;
+ font-weight:400;
+}
+
+.big-love{
+ font-family:"Playfair Display",serif;
+ font-size:23px;
+ color:var(--pink);
+ margin:25px 0 10px;
+ font-style:italic;
+}
+
+/* COPYRIGHT */
+
+.copyright-card{
+ text-align:center;
+ padding:30px 20px;
+ margin:25px 0;
+ border:1px solid #e8a6bd45;
+ border-radius:16px;
+ background:linear-gradient(145deg,#251523,#140e16);
+}
+
+.copyright-heart{
+ font-size:35px;
+ color:#e8a6bd;
+ margin-bottom:13px;
+}
+
+.copyright-title{
+ color:#e8a6bd;
+ letter-spacing:3px;
+ font-size:12px;
+ margin-bottom:15px;
+}
+
+.copyright-card p{
+ color:#c7b5c0;
+ font-size:12px;
+ line-height:2;
+ margin-bottom:20px;
+}
+
+.copyright-card strong{
+ display:block;
+ color:#d7bb91;
+ font-size:11px;
+ letter-spacing:3px;
+}
+
+.copyright-card span{
+ display:block;
+ color:#887482;
+ font-size:9px;
+ letter-spacing:2px;
+ margin-top:12px;
+}
+
+.footer{
+ text-align:center;
+ color:#796775;
+ font-size:9px;
+ letter-spacing:3px;
+ margin-top:35px;
+ line-height:2;
+}
+
+.hidden{display:none!important}
+
+@media(max-width:420px){
+ .card{padding:18px}
+ .hero{padding-top:45px}
+ .question{font-size:19px}
+ .time{padding:13px 2px}
+ .time span{font-size:7px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+ <div class="brand">ZAHRAA'S WORLD ♡</div>
+ <div class="classified">✦ PROJECT X</div>
+</header>
+
+<section class="hero">
+ <div class="flower">✿</div>
+ <div class="small-title">EXCLUSIVELY FOR ZAHRAA</div>
+ <h1>Just <span>a girl.</span></h1>
+ <p class="subtitle">
+  A little mystery. A little magic.<br>
+  And a story written just for you.
+ </p>
+</section>
+
+<!-- REAL DATE AND CLOCK -->
+
+<section class="clock-card">
+ <div class="label">LEBANON LOCAL TIME</div>
+
+ <div class="clock-time">
+  <span id="clockHours">00</span>:<span id="clockMinutes">00</span>:<span class="clock-seconds" id="clockSeconds">00</span>
+ </div>
+
+ <div class="clock-date" id="realDate">Loading date...</div>
+
+ <div class="clock-zone">
+  ASIA/BEIRUT · LEBANON
+ </div>
+</section>
+
+<!-- BIRTHDAY COUNTDOWN -->
+
+<section class="card">
+
+ <div class="card-header">
+  <div class="label">BIRTHDAY COUNTDOWN</div>
+  <div class="date">31.01.2027</div>
+ </div>
+
+ <div class="countdown-label">
+  TIME UNTIL ZAHRAA'S SPECIAL DAY
+ </div>
+
+ <div class="countdown">
+  <div class="time">
+   <strong id="days">00</strong>
+   <span>DAYS</span>
+  </div>
+
+  <div class="time">
+   <strong id="hours">00</strong>
+   <span>HOURS</span>
+  </div>
+
+  <div class="time">
+   <strong id="minutes">00</strong>
+   <span>MINUTES</span>
+  </div>
+
+  <div class="time">
+   <strong id="seconds">00</strong>
+   <span>SECONDS</span>
+  </div>
+ </div>
+
+</section>
+
+<!-- MISSION STATISTICS -->
+
+<section class="card">
+
+ <div class="card-header">
+  <div class="label">MISSION STATISTICS</div>
+  <div class="date">LIVE TRACKING</div>
+ </div>
+
+ <div class="stats">
+
+  <div class="stat">
+   <div class="stat-number" id="answered">0</div>
+   <div class="stat-name">SOLVED QUESTIONS</div>
+  </div>
+
+  <div class="stat">
+   <div class="stat-number" id="remaining">0</div>
+   <div class="stat-name">QUESTIONS LEFT</div>
+  </div>
+
+  <div class="stat">
+   <div class="stat-number" id="missed">0</div>
+   <div class="stat-name">MISSED DAYS</div>
+  </div>
+
+  <div class="stat">
+   <div class="stat-number" id="total">0</div>
+   <div class="stat-name">TOTAL QUESTIONS</div>
+  </div>
+
+ </div>
+
+ <div class="progress-info">
+  <span>MISSION COMPLETION</span>
+  <span id="percentage">0%</span>
+ </div>
+
+ <div class="track">
+  <div class="bar" id="bar"></div>
+ </div>
+
+ <div class="progress-caption" id="progressCaption">
+  Your journey is just beginning ♡
+ </div>
+
+</section>
+
+<!-- DAILY QUESTION -->
+
+<section class="card mission">
+
+ <div class="mission-icon">♡</div>
+
+ <div class="label">DAILY SECRET</div>
+
+ <h2 id="missionTitle">A new little mystery.</h2>
+
+ <p class="description">
+  One question every day, available only between 11:11 AM and 11:11 PM.
+ </p>
+
+ <div id="questionArea">
+
+  <div class="challenge">
+
+   <div class="challenge-number" id="challengeNumber">
+    CHAPTER 02
+   </div>
+
+   <div class="question" id="question">
+    Loading your secret...
+   </div>
+
+   <input
+    id="answer"
+    type="text"
+    placeholder="Write your answer..."
+    autocomplete="off"
+   >
+
+   <button class="main-btn" id="answerButton" onclick="checkAnswer()">
+    UNLOCK THE CLUE
+   </button>
+
+   <div class="message" id="message"></div>
+
+  </div>
+
+ </div>
+
+ <div class="waiting hidden" id="waitingArea">
+  <div class="lock">♡</div>
+  <h3>You've done today's little mission.</h3>
+  <p>
+   That's enough secrets for today.<br>
+   Come back tomorrow, my girl.<br>
+   There's more waiting for you.
+  </p>
+ </div>
+
+ <div class="waiting hidden" id="futureArea">
+  <div class="lock">✿</div>
+  <h3 id="scheduleTitle">Your next secret is waiting.</h3>
+  <p id="scheduleText">
+   Come back during your daily secret window.
+  </p>
+  <div class="schedule-countdown" id="scheduleCountdown"></div>
+ </div>
+
+ <div class="waiting hidden" id="finishedArea">
+  <div class="lock">♡</div>
+  <h3>The daily missions are complete.</h3>
+  <p>Your final surprise is waiting below.</p>
+ </div>
+
+</section>
+
+<!-- FINAL SECRET -->
+
+<section class="card">
+
+ <div class="card-header">
+  <div class="label">THE LAST SECRET</div>
+  <div class="date">31.01.2027</div>
+ </div>
+
+ <div class="waiting" id="finalLocked">
+  <div class="lock">♕</div>
+  <h3>Not yet, beautiful.</h3>
+  <p>
+   Some surprises are worth waiting for.<br>
+   Your final secret is waiting for January 31.
+  </p>
+ </div>
+
+ <div class="final" id="finalReady">
+
+  <div class="small-title">THE MOMENT HAS ARRIVED</div>
+
+  <h2>31.01</h2>
+
+  <p>
+   You've followed every clue.<br>
+   You've reached the end of the mystery.<br>
+   Are you ready to know why?
+  </p>
+
+  <button class="main-btn" onclick="revealFinal()">
+   REVEAL MY SURPRISE ♡
+  </button>
+
+ </div>
+
+ <div class="final" id="finalReveal">
+
+  <div class="small-title">PROJECT X — DECLASSIFIED</div>
+
+  <h2>I'm just a girl.</h2>
+
+  <div class="final-sub">
+   And you're my favorite person in this whole world.
+  </div>
+
+  <p>
+   My love, my heart, my wife...<br><br>
+
+   Zahraa, you thought these were just little daily questions.
+   But every single clue was leading to one special day.
+   YOUR day.
+  </p>
+
+  <div class="secret">
+   <span>01 — THE FIRST SURPRISE</span>
+   <strong>A romantic dinner, just you and me. 🥂</strong>
+  </div>
+
+  <div class="secret">
+   <span>02 — THE SECOND SURPRISE</span>
+   <strong>Your birthday celebration, made with love. 🎂</strong>
+  </div>
+
+  <div class="secret">
+   <span>03 — THE FINAL SURPRISE</span>
+   <strong>A private chalet. Our own little world. ❤️</strong>
+  </div>
+
+  <div class="big-love">
+   Happy Birthday, My Beautiful Zahraa.
+  </div>
+
+  <p>
+   I don't need a special occasion to love you.<br>
+   But I wanted this occasion to remind you<br>
+   how special you are to me.<br><br>
+
+   I planned every little detail just to see you smile.<br>
+   Because your happiness means everything to me.<br><br>
+
+   No matter where life takes us,<br>
+   I want every next chapter to be with you.
+  </p>
+
+  <div class="big-love">I choose you. Always. ♡</div>
+
+  <div style="color:#d7bb91;font-size:10px;letter-spacing:3px;margin-top:20px">
+   NOTHING IS ACCIDENTAL.
+  </div>
+
+ </div>
+
+</section>
+
+<!-- COPYRIGHT -->
+
+<div class="copyright-card">
+
+ <div class="copyright-heart">♡</div>
+
+ <div class="copyright-title">
+  A WORLD FOR ZAHRAA
+ </div>
+
+ <p>
+  This project, every secret, every detail
+  and every little surprise was created
+  exclusively for you.
+ </p>
+
+ <strong>PROPERTY OF ZAHRAA</strong>
+
+ <span>
+  31 JANUARY · FOREVER YOURS
+ </span>
+
+</div>
+
+<footer class="footer">
+ EXCLUSIVELY CREATED FOR ZAHRAA ♡
+ <br>
+ ALL RIGHTS RESERVED · 31.01.2027
+ <br>
+ THIS LITTLE WORLD BELONGS TO ZAHRAA.
+</footer>
+
+</div>
+
+<script>
+
+/* ===================================
+   PROJECT X SETTINGS
+=================================== */
+
+const TIME_ZONE = "Asia/Beirut";
+
+const START = {
+ year:2026,
+ month:11,
+ day:11
+};
+
+const BIRTHDAY = {
+ year:2027,
+ month:1,
+ day:31
+};
+
+// Lebanon is UTC+2 on January 31, 2027.
+const BIRTHDAY_TIMESTAMP = Date.UTC(2027,0,30,22,0,0);
+
+const STORAGE_KEY = "zahraaProjectX";
+
+/*
+ FIRST DAY SPECIAL:
+ The first available puzzle is question number 2.
+ This is a one-time opening exception.
+ The following days continue with question 3, 4, 5...
+*/
+const FIRST_DAY_QUESTION_OFFSET = 1;
+
+const OPEN_SECONDS = (11 * 3600) + (11 * 60);
+const CLOSE_SECONDS = (23 * 3600) + (11 * 60);
+
+/* ===================================
+   DAILY PUZZLES
+=================================== */
+
+const puzzles = [
+
+ {q:"I have a face and two hands, but no arms. What am I?",a:["clock"]},
+
+ {q:"The more you take away from me, the bigger I become. What am I?",a:["hole"]},
+
+ {q:"What belongs to you, but other people use it more than you?",a:["your name","name"]},
+
+ {q:"I get wetter the more I dry. What am I?",a:["towel"]},
+
+ {q:"What has keys but cannot open doors?",a:["piano"]},
+
+ {q:"What has a neck but no head?",a:["bottle"]},
+
+ {q:"What travels around the world while staying in one corner?",a:["stamp"]},
+
+ {q:"What has many teeth but cannot bite?",a:["comb"]},
+
+ {q:"What goes up but never comes down?",a:["age"]},
+
+ {q:"What can you catch but not throw?",a:["cold"]},
+
+ {q:"What has cities but no houses, forests but no trees?",a:["map"]},
+
+ {q:"What is always in front of you but cannot be seen?",a:["future"]},
+
+ {q:"What breaks without being touched?",a:["promise"]},
+
+ {q:"What has a ring but no finger?",a:["phone","telephone"]},
+
+ {q:"What has words but never speaks?",a:["book"]},
+
+ {q:"What fills a room but takes no space?",a:["light"]},
+
+ {q:"What has branches but no leaves?",a:["bank"]},
+
+ {q:"What has one eye but cannot see?",a:["needle"]},
+
+ {q:"What has a head and a tail but no body?",a:["coin"]},
+
+ {q:"What can be kept after being given to someone?",a:["promise","word"]}
+
+];
+
+/* ===================================
+   BEIRUT DATE HELPERS
+=================================== */
+
+function getBeirutParts(){
+
+ const parts = new Intl.DateTimeFormat("en-GB",{
+  timeZone:TIME_ZONE,
+  year:"numeric",
+  month:"2-digit",
+  day:"2-digit",
+  hour:"2-digit",
+  minute:"2-digit",
+  second:"2-digit",
+  hourCycle:"h23"
+ }).formatToParts(new Date());
+
+ const result={};
+
+ parts.forEach(p=>{
+  if(p.type!=="literal"){
+   result[p.type]=Number(p.value);
+  }
+ });
+
+ return result;
+}
+
+function currentBeirutDate(){
+
+ const p=getBeirutParts();
+
+ return {
+  year:p.year,
+  month:p.month,
+  day:p.day
+ };
+}
+
+function dateNumber(d){
+
+ return Date.UTC(
+  d.year,
+  d.month-1,
+  d.day
+ );
+}
+
+function dateDifference(a,b){
+
+ return Math.round(
+  (dateNumber(b)-dateNumber(a))/86400000
+ );
+}
+
+function todayKey(){
+
+ const d=currentBeirutDate();
+
+ return [
+  d.year,
+  String(d.month).padStart(2,"0"),
+  String(d.day).padStart(2,"0")
+ ].join("-");
+}
+
+function dayNumber(){
+
+ return dateDifference(START,currentBeirutDate());
+}
+
+function totalQuestions(){
+
+ return dateDifference(START,BIRTHDAY);
+}
+
+function clean(value){
+
+ return value.trim()
+  .toLowerCase()
+  .replace(/[.,!?'"’]/g,"")
+  .replace(/\s+/g," ");
+
+}
+
+function currentSeconds(){
+
+ const p=getBeirutParts();
+
+ return p.hour*3600+p.minute*60+p.second;
+}
+
+function isQuestionTimeOpen(){
+
+ const seconds=currentSeconds();
+
+ return seconds>=OPEN_SECONDS && seconds<CLOSE_SECONDS;
+
+}
+
+/* ===================================
+   DAILY QUESTION INDEX
+=================================== */
+
+function getPuzzleIndex(){
+
+ const day=dayNumber();
+
+ return (day+FIRST_DAY_QUESTION_OFFSET)%puzzles.length;
+
+}
+
+function getCurrentPuzzle(){
+
+ return puzzles[getPuzzleIndex()];
+
+}
+
+function getChapterNumber(){
+
+ return dayNumber()+FIRST_DAY_QUESTION_OFFSET+1;
+
+}
+
+/* ===================================
+   PROGRESS STORAGE
+=================================== */
+
+function getProgress(){
+
+ try{
+
+  return JSON.parse(
+   localStorage.getItem(STORAGE_KEY)||"{}"
+  );
+
+ }catch(e){
+
+  return {};
+
+ }
+
+}
+
+function completedToday(){
+
+ return getProgress()[todayKey()]===true;
+
+}
+
+function markCompleted(){
+
+ const data=getProgress();
+
+ data[todayKey()]=true;
+
+ localStorage.setItem(
+  STORAGE_KEY,
+  JSON.stringify(data)
+ );
+
+}
+
+function answeredCount(){
+
+ const data=getProgress();
+
+ const startNumber=dateNumber(START);
+ const endNumber=dateNumber(BIRTHDAY);
+
+ return Object.keys(data).filter(key=>{
+
+  if(data[key]!==true)return false;
+
+  const parts=key.split("-").map(Number);
+
+  if(parts.length!==3)return false;
+
+  const n=Date.UTC(
+   parts[0],
+   parts[1]-1,
+   parts[2]
+  );
+
+  return n>=startNumber && n<endNumber;
+
+ }).length;
+
+}
+
+/* ===================================
+   MISSED DAYS
+=================================== */
+
+function isDateCompleted(date){
+
+ const key=[
+  date.year,
+  String(date.month).padStart(2,"0"),
+  String(date.day).padStart(2,"0")
+ ].join("-");
+
+ return getProgress()[key]===true;
+
+}
+
+function getMissedCount(){
+
+ const today=currentBeirutDate();
+ const todayNumber=dateNumber(today);
+
+ const startNumber=dateNumber(START);
+ const endNumber=dateNumber(BIRTHDAY);
+
+ const progress=getProgress();
+
+ let missed=0;
+
+ for(
+  let timestamp=startNumber;
+  timestamp<endNumber && timestamp<=todayNumber;
+  timestamp+=86400000
+ ){
+
+  const d=new Date(timestamp);
+
+  const date={
+   year:d.getUTCFullYear(),
+   month:d.getUTCMonth()+1,
+   day:d.getUTCDate()
+  };
+
+  const key=[
+   date.year,
+   String(date.month).padStart(2,"0"),
+   String(date.day).padStart(2,"0")
+  ].join("-");
+
+  if(progress[key]===true)continue;
+
+  // A day becomes missed only after 11:11 PM Beirut time.
+  if(timestamp<todayNumber){
+   missed++;
+  }else if(timestamp===todayNumber && currentSeconds()>=CLOSE_SECONDS){
+   missed++;
+  }
+
+ }
+
+ return missed;
+
+}
+
+/* ===================================
+   LIVE CLOCK
+=================================== */
+
+function updateClock(){
+
+ const p=getBeirutParts();
+
+ document.getElementById("clockHours").textContent=
+  String(p.hour).padStart(2,"0");
+
+ document.getElementById("clockMinutes").textContent=
+  String(p.minute).padStart(2,"0");
+
+ document.getElementById("clockSeconds").textContent=
+  String(p.second).padStart(2,"0");
+
+ const dateText=new Intl.DateTimeFormat("en-GB",{
+  timeZone:TIME_ZONE,
+  weekday:"long",
+  day:"2-digit",
+  month:"long",
+  year:"numeric"
+ }).format(new Date());
+
+ document.getElementById("realDate").textContent=dateText;
+
+}
+
+/* ===================================
+   SCHEDULE COUNTDOWN
+=================================== */
+
+function updateScheduleCountdown(){
+
+ const seconds=currentSeconds();
+
+ let remaining;
+
+ if(seconds<OPEN_SECONDS){
+
+  remaining=OPEN_SECONDS-seconds;
+
+  document.getElementById("scheduleTitle").textContent=
+   "Your daily secret is almost here.";
+
+  document.getElementById("scheduleText").textContent=
+   "Today's question opens at 11:11 AM Beirut time. ♡";
+
+ }else{
+
+  remaining=(86400-seconds)+OPEN_SECONDS;
+
+  document.getElementById("scheduleTitle").textContent=
+   "Today's secret is closed.";
+
+  document.getElementById("scheduleText").textContent=
+   "Your next question opens tomorrow at 11:11 AM. Some secrets are worth waiting for. ♡";
+
+ }
+
+ const h=Math.floor(remaining/3600);
+ const m=Math.floor((remaining%3600)/60);
+ const s=remaining%60;
+
+ document.getElementById("scheduleCountdown").textContent=
+  String(h).padStart(2,"0")+":"+
+  String(m).padStart(2,"0")+":"+
+  String(s).padStart(2,"0");
+
+}
+
+/* ===================================
+   MISSION STATISTICS
+=================================== */
+
+function updateStatistics(){
+
+ const total=totalQuestions();
+ const solved=answeredCount();
+ const missed=getMissedCount();
+
+ const remaining=Math.max(
+  0,
+  total-solved-missed
+ );
+
+ const percentage=total===0
+  ?0
+  :Math.min(100,Math.round(solved/total*100));
+
+ document.getElementById("answered").textContent=solved;
+
+ document.getElementById("remaining").textContent=remaining;
+
+ document.getElementById("missed").textContent=missed;
+
+ document.getElementById("total").textContent=total;
+
+ document.getElementById("percentage").textContent=
+  percentage+"%";
+
+ document.getElementById("bar").style.width=
+  percentage+"%";
+
+ document.getElementById("progressCaption").textContent=
+  percentage===100
+   ?"All missions completed. Happy Birthday, Zahraa! ♡"
+   :solved+" completed · "+remaining+
+    " remaining · "+missed+" missed";
+
+}
+
+/* ===================================
+   DAILY MISSION DISPLAY
+=================================== */
+
+function showOnly(id){
+
+ [
+  "questionArea",
+  "waitingArea",
+  "futureArea",
+  "finishedArea"
+ ].forEach(x=>{
+  document.getElementById(x).classList.add("hidden");
+ });
+
+ document.getElementById(id).classList.remove("hidden");
+
+}
+
+function loadQuestion(){
+
+ const today=currentBeirutDate();
+ const day=dayNumber();
+
+ const todayNumber=dateNumber(today);
+ const startNumber=dateNumber(START);
+ const birthdayNumber=dateNumber(BIRTHDAY);
+
+ if(todayNumber<startNumber){
+
+  showOnly("futureArea");
+
+  document.getElementById("missionTitle").textContent=
+   "Something is coming...";
+
+  document.getElementById("scheduleTitle").textContent=
+   "Your journey begins soon.";
+
+  document.getElementById("scheduleText").textContent=
+   "Your first daily secret will be available on November 11.";
+
+  document.getElementById("scheduleCountdown").textContent="";
+
+  return;
+
+ }
+
+ if(todayNumber>=birthdayNumber){
+
+  showOnly("finishedArea");
+
+  document.getElementById("missionTitle").textContent=
+   "Your journey is complete.";
+
+  return;
+
+ }
+
+ const puzzle=getCurrentPuzzle();
+
+ const chapter=getChapterNumber();
+
+ document.getElementById("challengeNumber").textContent=
+  "CHAPTER "+String(chapter).padStart(2,"0");
+
+ document.getElementById("question").textContent=puzzle.q;
+
+ document.getElementById("missionTitle").textContent=
+  "Day "+(day+1)+" — A little mystery.";
+
+ if(completedToday()){
+
+  showOnly("waitingArea");
+
+  document.getElementById("missionTitle").textContent=
+   "One more step closer.";
+
+  return;
+
+ }
+
+ if(!isQuestionTimeOpen()){
+
+  showOnly("futureArea");
+
+  updateScheduleCountdown();
+
+  return;
+
+ }
+
+ showOnly("questionArea");
+
+}
+
+/* ===================================
+   ANSWER CHECKING
+=================================== */
+
+function checkAnswer(){
+
+ const today=currentBeirutDate();
+
+ const todayNumber=dateNumber(today);
+
+ if(
+  todayNumber<dateNumber(START) ||
+  todayNumber>=dateNumber(BIRTHDAY) ||
+  completedToday()
+ )return;
+
+ if(!isQuestionTimeOpen()){
+
+  document.getElementById("message").textContent=
+   "The daily question window is closed. Come back tomorrow at 11:11 AM. ♡";
+
+  return;
+
+ }
+
+ const puzzle=getCurrentPuzzle();
+
+ const input=document.getElementById("answer");
+ const value=clean(input.value);
+
+ const correct=puzzle.a.some(
+  x=>clean(x)===value
+ );
+
+ const msg=document.getElementById("message");
+
+ if(correct){
+
+  markCompleted();
+
+  msg.textContent="♡ CORRECT. SECRET UNLOCKED.";
+  msg.style.color="#9ad7b0";
+
+  input.disabled=true;
+
+  document.getElementById("answerButton").disabled=true;
+
+  updateStatistics();
+
+  setTimeout(()=>{
+
+   showOnly("waitingArea");
+
+   document.getElementById("missionTitle").textContent=
+    "One more step closer.";
+
+  },1200);
+
+ }else{
+
+  msg.textContent=
+   "Not quite, beautiful. Try again. ♡";
+
+  msg.style.color="#e8a6bd";
+
+ }
+
+}
+
+document.getElementById("answer").addEventListener(
+ "keydown",e=>{
+  if(e.key==="Enter")checkAnswer();
+ }
+);
+
+/* ===================================
+   LIVE BIRTHDAY COUNTDOWN
+=================================== */
+
+function updateCountdown(){
+
+ const distance=BIRTHDAY_TIMESTAMP-Date.now();
+
+ if(distance<=0){
+
+  ["days","hours","minutes","seconds"].forEach(id=>{
+   document.getElementById(id).textContent="00";
+  });
+
+  updateFinal();
+
+  return;
+
+ }
+
+ const days=Math.floor(distance/86400000);
+
+ const hours=Math.floor(
+  (distance%86400000)/3600000
+ );
+
+ const minutes=Math.floor(
+  (distance%3600000)/60000
+ );
+
+ const seconds=Math.floor(
+  (distance%60000)/1000
+ );
+
+ document.getElementById("days").textContent=
+  String(days).padStart(2,"0");
+
+ document.getElementById("hours").textContent=
+  String(hours).padStart(2,"0");
+
+ document.getElementById("minutes").textContent=
+  String(minutes).padStart(2,"0");
+
+ document.getElementById("seconds").textContent=
+  String(seconds).padStart(2,"0");
+
+}
+
+/* ===================================
+   FINAL REVEAL
+=================================== */
+
+function updateFinal(){
+
+ const today=currentBeirutDate();
+
+ if(dateNumber(today)>=dateNumber(BIRTHDAY)){
+
+  document.getElementById("finalLocked").style.display="none";
+
+  const alreadyRevealed=
+   localStorage.getItem("zahraaFinalRevealed")==="true";
+
+  if(alreadyRevealed){
+
+   document.getElementById("finalReady").style.display="none";
+   document.getElementById("finalReveal").style.display="block";
+
+  }else{
+
+   document.getElementById("finalReady").style.display="block";
+
+  }
+
+ }
+
+}
+
+function revealFinal(){
+
+ const today=currentBeirutDate();
+
+ if(dateNumber(today)<dateNumber(BIRTHDAY))return;
+
+ document.getElementById("finalReady").style.display="none";
+
+ document.getElementById("finalReveal").style.display="block";
+
+ document.getElementById("finalReveal").scrollIntoView({
+  behavior:"smooth",
+  block:"center"
+ });
+
+ localStorage.setItem(
+  "zahraaFinalRevealed","true"
+ );
+
+}
+
+/* ===================================
+   INITIALIZATION
+=================================== */
+
+function initialize(){
+
+ updateClock();
+
+ updateCountdown();
+
+ updateStatistics();
+
+ loadQuestion();
+
+ updateFinal();
+
+}
+
+initialize();
+
+setInterval(()=>{
+
+ updateClock();
+
+ updateCountdown();
+
+ updateStatistics();
+
+ loadQuestion();
+
+ updateFinal();
+
+},1000);
+
+</script>
+
+</body>
+</html>
